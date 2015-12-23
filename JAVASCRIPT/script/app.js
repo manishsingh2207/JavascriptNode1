@@ -28,11 +28,17 @@ function plot2(state, totalGraduates, totalGraduatesMale, totalGraduatesFemale) 
     this.totalGraduatesFemale = totalGraduatesFemale;
 };
 var j = 0;
-var plotGraph2 = [];
-
+var plotGraph2_1 = [];
+var plotGraph2_2 = [];
 
 <!-- plot 3 -->
 var plot3_data = {};
+
+function plot3(educationCategories, totalPersons) {
+    this.educationCategories = educationCategories;
+    this.totalPersons = totalPersons;
+};
+var plotGraph3 = [];
 var k = 0;
 var l = 0;
 var headers = [];
@@ -49,14 +55,16 @@ function WriteJson(filePath) {
                 }
                 /*collect data from file*/
                 if (tempArray[4] == "Total") {
-                  //-----------------plot1----------------------------------
-                    var tempPlot1 = new plot1;
-                    tempPlot1.ageGroup = tempArray[5];
-                    tempPlot1.totalLiteratePersons = tempArray[12];
-                    if (getProperty1(tempPlot1.ageGroup) == null) {
-                        plot1_data[tempPlot1.ageGroup] = tempPlot1.totalLiteratePersons;
-                    } else {
-                        plot1_data[tempPlot1.ageGroup] = parseInt(plot1_data[tempPlot1.ageGroup]) + parseInt(tempPlot1.totalLiteratePersons);
+                    //-----------------plot1----------------------------------
+                    if (tempArray[5] != "All ages") {
+                        var tempPlot1 = new plot1;
+                        tempPlot1.ageGroup = tempArray[5];
+                        tempPlot1.totalLiteratePersons = tempArray[12];
+                        if (getProperty1(tempPlot1.ageGroup) == null) {
+                            plot1_data[tempPlot1.ageGroup] = tempPlot1.totalLiteratePersons;
+                        } else {
+                            plot1_data[tempPlot1.ageGroup] = parseInt(plot1_data[tempPlot1.ageGroup]) + parseInt(tempPlot1.totalLiteratePersons);
+                        }
                     }
 
                     //---------------plot2---------------------------------------
@@ -92,27 +100,49 @@ function WriteJson(filePath) {
         });
         i++;
     }
+    var temp;
     for (var key in plot1_data) {
         if (plot1_data.hasOwnProperty(key)) {
             var tempObj = new plot1;
             tempObj.ageGroup = key;
-            tempObj.totalLiteratePersons = plot1_data[key];
-            plotGraph1.push(tempObj);
+            tempObj.totalLiteratePersons = plot1_data[key] + "";
+            if (tempObj.ageGroup == "0-6")
+                plotGraph1.unshift(tempObj);
+            else {
+                plotGraph1.push(tempObj);
+            }
         }
     }
 
     for (var key in plot2_data) {
         if (plot2_data.hasOwnProperty(key)) {
-            var tempObj = new plot2;
-            tempObj.state = key;
-            tempObj.totalGraduatesMale = plot2_data[key][0];
-            tempObj.totalGraduatesFemale = plot2_data[key][1];
-            plotGraph2.push(tempObj);
+            var tempObj1 = new plot2;
+            var tempObj2 = new plot2;
+            if ((parseInt(plot2_data[key][0]) > 50000)) {
+                tempObj1.state = key;
+                tempObj1.totalGraduatesMale = plot2_data[key][0];
+                tempObj1.totalGraduatesFemale = plot2_data[key][1];
+                plotGraph2_1.push(tempObj1);
+            } else {
+                tempObj2.state = key;
+                tempObj2.totalGraduatesMale = plot2_data[key][0];
+                tempObj2.totalGraduatesFemale = plot2_data[key][1];
+                plotGraph2_2.push(tempObj2);
+            }
+        }
+    }
+
+    for (var key in plot3_data) {
+        if (plot3_data.hasOwnProperty(key)) {
+            var tempObj = new plot3;
+            tempObj.educationCategories = key;
+            tempObj.totalPersons = plot3_data[key];
+            plotGraph3.push(tempObj);
         }
     }
 }
-
 WriteJson(filePath);
-fs.writeFile('./plot1.json', JSON.stringify(plotGraph1));
-fs.writeFile('./plot2.json', JSON.stringify(plotGraph2));
-fs.writeFile('./plot3.json', JSON.stringify(plot3_data));
+fs.writeFile('../Json/plot1.json', JSON.stringify(plotGraph1));
+fs.writeFile('../Json/plot2_1.json', JSON.stringify(plotGraph2_1));
+fs.writeFile('../Json/plot2_2.json', JSON.stringify(plotGraph2_2));
+fs.writeFile('../Json/plot3.json', JSON.stringify(plotGraph3));
