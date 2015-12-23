@@ -47,7 +47,7 @@ function plot2_1() {
         .style("opacity", 0);
 
 
-    d3.json("../Json/plot2_2.json", function(error, data) {
+    d3.json("Json/plot2_2.json", function(error, data) {
         x.domain(data.map(function(d) {
             return d.state;
         }));
@@ -176,7 +176,7 @@ function plot2_2() {
         .style("opacity", 0);
 
 
-    d3.json("../Json/plot2_1.json", function(error, data) {
+    d3.json("Json/plot2_1.json", function(error, data) {
         x.domain(data.map(function(d) {
             return d.state;
         }));

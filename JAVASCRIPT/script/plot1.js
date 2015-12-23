@@ -36,7 +36,7 @@ function plot1() {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     svg.call(tip);
-    d3.json("../Json/plot1.json", function(error, data) {
+    d3.json("Json/plot1.json", function(error, data) {
         if (error) throw error;
 
         x.domain(data.map(function(d) {
